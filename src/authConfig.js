@@ -13,11 +13,10 @@ import { LogLevel } from "@azure/msal-browser";
 
 export const msalConfig = {
     auth: {
-        clientId: "351af6d8-4c20-4fe5-994e-ffa48aa4a433",
-        authority: "https://login.microsoftonline.com/c0b06b89-b785-4434-aab6-b817d51afcde",
+        clientId: "f6df5759-b340-4bf3-abd3-fcbb6f3b2602",
+        authority: "https://login.microsoftonline.com/9274ee3f-9425-4109-a27f-9fb15c10675d",
         redirectUri: "http://localhost:3000",
     },
-    // https://login.microsoftonline.com/c0b06b89-b785-4434-aab6-b817d51afcde/discovery/v2.0/keys
     cache: {
         cacheLocation: "sessionStorage", // This configures where your cache will be stored
         storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
@@ -56,13 +55,5 @@ export const msalConfig = {
  * https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-permissions-and-consent#openid-connect-scopes
  */
 export const loginRequest = {
-    scopes: ["User.Read"]
-};
-
-/**
- * Add here the scopes to request when obtaining an access token for MS Graph API. For more information, see:
- * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md
- */
-export const graphConfig = {
-    graphMeEndpoint: "https://graph.microsoft.com/v1.0/me",
+    scopes: ["api://f6df5759-b340-4bf3-abd3-fcbb6f3b2602/access_as_user"],
 };

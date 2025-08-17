@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 
 import { PageLayout } from './components/PageLayout';
-import { loginRequest } from './authConfig';
-import { callMsGraph } from './graph';
 import { ProfileData } from './components/ProfileData';
 
 import {AuthenticatedTemplate, UnauthenticatedTemplate, useMsal} from '@azure/msal-react';
@@ -15,18 +13,20 @@ import Button from 'react-bootstrap/Button';
 
 const ProfileContent = () => {
     const { instance, accounts } = useMsal();
-    const [graphData, setGraphData] = useState(null);
+    const [profileData, setProfileData] = useState(null);
 
-    //fetch roles assigned to the user
-    const getRoles = () => {
+    const getProfileData = () => {
         instance.acquireTokenSilent({
-            scopes: ['User.Read'],
+            scopes: ['api://f6df5759-b340-4bf3-abd3-fcbb6f3b2602/access_as_user'],
             account: accounts[0],
         })
             .then(response => {
                 const idToken = response.idToken;
                 const decoded = parseJwt(idToken);
-                console.log("Assigned Roles: " + decoded.roles);
+                setProfileData({
+                    preferred_username: decoded.preferred_username,
+                    role: decoded.roles
+                });
             });
     }
     const parseJwt = (token) => {
@@ -34,31 +34,15 @@ const ProfileContent = () => {
         return JSON.parse(atob(base64Payload));
     }
 
-    function RequestProfileData() {
-        // Silently acquires an access token which is then attached to a request for MS Graph data
-        instance
-            .acquireTokenSilent({
-                ...loginRequest,
-                account: accounts[0],
-            })
-            .then((response) => {
-                callMsGraph(response.accessToken).then((response) => setGraphData(response));
-            });
-    }
-
     return (
         <>
             <h5 className="profileContent">Welcome {accounts[0].name}</h5>
-            {graphData ? (
-                <ProfileData graphData={graphData} />
+            {profileData ? (
+                <ProfileData profileData={profileData} />
             ) : (
                 <>
-                <Button variant="secondary" onClick={RequestProfileData}>
-                    Request Profile
-                </Button>
-
-                <Button variant="secondary" onClick={getRoles}>
-                    Get Roles
+                <Button variant="secondary" onClick={getProfileData}>
+                    Fetch User Profile & Role Assigned
                 </Button>
                 </>
             )}
